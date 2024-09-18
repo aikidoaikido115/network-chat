@@ -6,6 +6,8 @@ const socket = io('http://localhost:5000');  // เชื่อมต่อไ�
 function App() {
   const [message, setMessage] = useState('');
   const [chat, setChat] = useState([]);
+  const [file, setFile] = useState();
+
 
   useEffect(() => {
     socket.on('message', (msg) => {
@@ -16,6 +18,10 @@ function App() {
       socket.off('message');
     };
   }, []);
+  const handleImageChange = (e) => {
+    console.log(e.target.files);
+    setFile(URL.createObjectURL(e.target.files[0]));
+  }
 
   const sendMessage = (e) => {
     e.preventDefault();
@@ -33,6 +39,14 @@ function App() {
       </div>
       <form onSubmit={sendMessage}>
         <input
+          type="image"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Type your message"
+          style={{ marginRight: '10px' }}
+        />
+        <input type="file" onChange={handleImageChange} />
+        <input
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
@@ -40,6 +54,7 @@ function App() {
           style={{ marginRight: '10px' }}
         />
         <button type="submit">Send</button>
+        <img src={file} />
       </form>
     </div>
   );
