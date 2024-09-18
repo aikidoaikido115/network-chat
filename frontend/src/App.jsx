@@ -7,6 +7,7 @@ function App() {
   const [message, setMessage] = useState('');
   const [chat, setChat] = useState([]);
   const [file, setFile] = useState();
+  
 
 
   useEffect(() => {
