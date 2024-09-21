@@ -21,7 +21,7 @@ function App() {
   }, []);
   const handleImageChange = (e) => {
     console.log(e.target.files);
-    setFile(URL.createObjectURL(e.target.files[0]));
+    setFile(e.target.files[0]);
   }
 
   const sendMessage = (e) => {
@@ -31,33 +31,37 @@ function App() {
   };
 
   return (
-    <div style={{ textAlign: 'center', marginTop: '50px' }}>
-      <h1>Web Chat</h1>
-      <div style={{ height: '300px', border: '1px solid black', padding: '10px', overflowY: 'scroll' }}>
-        {chat.map((msg, index) => (
-          <div key={index}>{msg}</div>
-        ))}
-      </div>
-      <form onSubmit={sendMessage}>
-        <input
-          type="image"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Type your message"
-          style={{ marginRight: '10px' }}
-        />
-        <input type="file" onChange={handleImageChange} />
-        <input
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Type your message"
-          style={{ marginRight: '10px' }}
-        />
-        <button type="submit">Send</button>
-        <img src={file} />
-      </form>
-    </div>
+    <div className="text-center mt-12">
+        <h1 className="text-3xl font-bold mb-4">Web Chat</h1>
+        <div className="h-72 border border-black p-2 overflow-y-scroll">
+            {chat.map((msg, index) => (
+            <div key={index}>{msg}</div>
+            ))}
+        </div>
+        <form onSubmit={sendMessage} className="mt-4">
+            <div className="flex items-center space-x-4">
+            <input
+                type="text"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Type your message"
+                className="border p-2 rounded-md flex-1"
+            />
+            <input
+              type="file"
+              onChange={handleImageChange}
+              className="border p-2 rounded-md"
+            />
+            <button
+              type="submit"
+              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+            >
+                Send
+            </button>
+            </div>
+            {file && <img src={URL.createObjectURL(file)} className="mt-4 max-w-full h-auto" />}
+        </form>
+        </div>
   );
 }
 
