@@ -8,6 +8,7 @@ function App() {
   const [message, setMessage] = useState('');
   const [chat, setChat] = useState([]);
   const [file, setFile] = useState();
+  const [username, setUserName] = useState("Guest")
   
 
 
@@ -57,33 +58,43 @@ function App() {
             {chat.map((msg, index) => (
             <div key={index} className='my-2'>
                 {msg.startsWith('http') ? (
-                    <img src={msg} className="w-1/6 h-auto"/>
+                    <div>
+                        <p>{username} ส่งรูป</p>
+                        <img src={msg} className="w-1/6 h-auto"/>
+                    </div>
             ) : (
-              msg
+              `${username}: ${msg}`
             )}
             </div>
             ))}
         </div>
         <form onSubmit={sendMessage} className="mt-4">
             <div className="flex items-center space-x-4">
-            <input
-                type="text"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Type your message"
-                className="border p-2 rounded-md flex-1"
-            />
-            <input
-              type="file"
-              onChange={handleImageChange}
-              className="border p-2 rounded-md"
-            />
-            <button
-              type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-            >
-                Send
-            </button>
+                <input
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUserName(e.target.value)}
+                    placeholder="Type your username"
+                    className="border p-2 rounded-md flex-none"
+                />
+                <input
+                    type="text"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Type your message"
+                    className="border p-2 rounded-md flex-1"
+                />
+                <input
+                type="file"
+                onChange={handleImageChange}
+                className="border p-2 rounded-md"
+                />
+                <button
+                type="submit"
+                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                >
+                    Send
+                </button>
             </div>
             {file && <img src={URL.createObjectURL(file)} className="mt-4 max-w-full h-auto" />}
         </form>
