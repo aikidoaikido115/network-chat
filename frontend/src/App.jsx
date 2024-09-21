@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
+import axios from 'axios';
 
 const socket = io('http://localhost:5000');  // เชื่อมต่อไปยัง Flask
 
@@ -19,23 +20,48 @@ function App() {
       socket.off('message');
     };
   }, []);
+
   const handleImageChange = (e) => {
-    console.log(e.target.files);
     setFile(e.target.files[0]);
   }
 
-  const sendMessage = (e) => {
+  const sendMessage = async (e) => {
     e.preventDefault();
-    socket.send(message);  // ส่งข้อความไปยัง Flask ผ่าน WebSocket
-    setMessage('');  // ล้างกล่องข้อความหลังจากส่งแล้ว
+    if (file) {
+        // Handle file upload
+        const formData = new FormData();
+        formData.append('file', file);
+  
+        try {
+          const response = await axios.post('http://localhost:5000/upload', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+          socket.send(response.data.fileUrl);  // Send the file URL via WebSocket
+          setFile(null);  // Clear the file input
+        } catch (error) {
+          console.error('Error uploading file', error);
+        }
+      } else {
+        // Handle text message
+        socket.send(message);  
+      }
+      setMessage(''); 
   };
 
   return (
-    <div className="text-center mt-12">
+    <div className="h-[90vh] border border-green-400">
         <h1 className="text-3xl font-bold mb-4">Web Chat</h1>
-        <div className="h-72 border border-black p-2 overflow-y-scroll">
+        <div className="h-4/5 border-2 border-black p-2 overflow-y-scroll">
             {chat.map((msg, index) => (
-            <div key={index}>{msg}</div>
+            <div key={index} className='my-2'>
+                {msg.startsWith('http') ? (
+                    <img src={msg} className="w-1/6 h-auto"/>
+            ) : (
+              msg
+            )}
+            </div>
             ))}
         </div>
         <form onSubmit={sendMessage} className="mt-4">
