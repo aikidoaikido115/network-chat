@@ -6,7 +6,9 @@ const socket = io('http://localhost:5000');  // เชื่อมต่อไ�
 function App() {
   const [message, setMessage] = useState('');
   const [chat, setChat] = useState([]);
-  const [imageFile, setImageFile] = useState(null);
+  const [file, setFile] = useState();
+  
+
 
   useEffect(() => {
     socket.on('message', (msg) => {
