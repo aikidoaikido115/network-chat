@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import axios from 'axios';
 
-const socket = io('http://localhost:5000');  // เชื่อมต่อไปยัง Flask
+const socket = io(import.meta.env.VITE_URL_TO_FLASK);  // เชื่อมต่อไปยัง Flask
 
 function App() {
   const [message, setMessage] = useState('');
@@ -34,7 +34,7 @@ function App() {
         formData.append('file', file);
   
         try {
-          const response = await axios.post('http://localhost:5000/upload', formData, {
+          const response = await axios.post(`${import.meta.env.VITE_URL_TO_FLASK}/upload`, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
             },
