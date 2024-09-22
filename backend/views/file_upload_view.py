@@ -20,7 +20,7 @@ def upload_file():
         filepath = os.path.join(UPLOAD_FOLDER, filename)
         file.save(filepath)
 
-        file_url = f"http://localhost:5000/uploads/{filename}"
+        file_url = f"{os.getenv('URL_TO_FLASK')}/uploads/{filename}"
         return jsonify({'fileUrl': file_url})
 
     return jsonify({'error': 'Invalid file format'}), 400

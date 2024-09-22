@@ -1,8 +1,12 @@
 from flask import Flask
 from flask_socketio import SocketIO
 from flask_cors import CORS
+from dotenv import load_dotenv
 from controllers.chat_controller import handle_message  # Import controller
 from views.file_upload_view import upload_file, serve_file
+
+#ใช้ .env ได้กับทุกไฟล์ด้วย os.getenv('VARIABLE')
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
