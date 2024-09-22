@@ -17,4 +17,4 @@ app.add_url_rule('/upload', 'upload_file', upload_file, methods=['POST'])
 app.add_url_rule('/uploads/<filename>', 'serve_file', serve_file)
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    socketio.run(app, host='0.0.0.0', debug=True)
