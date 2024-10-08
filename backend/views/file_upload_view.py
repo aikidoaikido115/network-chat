@@ -10,6 +10,7 @@ def upload_file():
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'}), 400
 
+    username = request.form['username']
     file = request.files['file']
 
     if file.filename == '':
@@ -21,7 +22,7 @@ def upload_file():
         file.save(filepath)
 
         file_url = f"{os.getenv('URL_TO_FLASK')}/uploads/{filename}"
-        return jsonify({'fileUrl': file_url})
+        return jsonify({'fileUrl': file_url, 'username': username})
 
     return jsonify({'error': 'Invalid file format'}), 400
 
