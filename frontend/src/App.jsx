@@ -13,8 +13,9 @@ function App() {
 
 
   useEffect(() => {
-    socket.on('message', (msg) => {
-      setChat((prevChat) => [...prevChat, msg]);  // เมื่อมีข้อความใหม่ เข้ามาจะเพิ่มในแชท
+    socket.on('message', (msg_json) => {
+      let parsed_json = JSON.parse(msg_json)
+      setChat((prevChat) => [...prevChat, { "msg": parsed_json.msg, "username": parsed_json.username }]);  // เมื่อมีข้อความใหม่ เข้ามาจะเพิ่มในแชท 
     });
 
     return () => {
@@ -28,10 +29,13 @@ function App() {
 
   const sendMessage = async (e) => {
     e.preventDefault();
+    console.log(chat)
+    console.log(file)
     if (file) {
         // Handle file upload
         const formData = new FormData();
         formData.append('file', file);
+        formData.append('username', username) // ส่งชื่อ username ไปแสดงผลด้วย
   
         try {
           const response = await axios.post(`${import.meta.env.VITE_URL_TO_FLASK}/upload`, formData, {
@@ -39,14 +43,14 @@ function App() {
               'Content-Type': 'multipart/form-data',
             },
           });
-          socket.send(response.data.fileUrl);  // Send the file URL via WebSocket
+          socket.send(JSON.stringify({msg: response.data.fileUrl, username: response.data.username}));  // Send the file URL via WebSocket, convert to JSON to send username
           setFile(null);  // Clear the file input
         } catch (error) {
           console.error('Error uploading file', error);
         }
       } else {
         // Handle text message
-        socket.send(message);  
+        socket.send(JSON.stringify({"msg":message, "username": username}));  
       }
       setMessage(''); 
   };
@@ -55,15 +59,15 @@ function App() {
     <div className="h-[90vh] border border-green-400">
         <h1 className="text-3xl font-bold mb-4">Web Chat</h1>
         <div className="h-4/5 border-2 border-black p-2 overflow-y-scroll">
-            {chat.map((msg, index) => (
+            {chat.map((message, index) => (
             <div key={index} className='my-2'>
-                {msg.startsWith('http') ? (
+                {message.msg.startsWith('http') ? (
                     <div>
-                        <p>{username} ส่งรูป</p>
-                        <img src={msg} className="w-1/6 h-auto"/>
+                        <p>{message.username} ส่งรูป</p>
+                        <img src={message.msg} className="w-1/6 h-auto"/>
                     </div>
             ) : (
-              `${username}: ${msg}`
+              `${message.username}: ${message.msg}`
             )}
             </div>
             ))}
